@@ -87,6 +87,7 @@ const gameState = {
   isPaused: false,
   isTimeUp: false,
   pendingNextOrder: false,
+  isResettingAttempt: false,
   mode: "challenge",
   order: null,
   cooking: null,
@@ -274,6 +275,7 @@ function resetChallenge() {
   gameState.isPaused = false;
   gameState.isTimeUp = false;
   gameState.pendingNextOrder = false;
+  gameState.isResettingAttempt = false;
   gameState.mode = "challenge";
   gameState.order = null;
   gameState.cooking = emptyCookingState();
@@ -332,6 +334,7 @@ function resetCookingForMode(mode) {
   gameState.isPaused = false;
   gameState.isTimeUp = false;
   gameState.pendingNextOrder = false;
+  gameState.isResettingAttempt = false;
   gameState.order = null;
   gameState.cooking = emptyCookingState();
   gameState.currentOrderErrors.clear();
@@ -344,6 +347,7 @@ function resetCookingForMode(mode) {
 function nextOrder() {
   if (gameState.isTimeUp) return;
   gameState.pendingNextOrder = false;
+  gameState.isResettingAttempt = false;
   gameState.order = createOrder();
   gameState.cooking = emptyCookingState();
   gameState.currentOrderErrors.clear();
@@ -351,6 +355,25 @@ function nextOrder() {
   els.resultBox.className = "result";
   renderOrder();
   renderCooking();
+}
+
+function failCurrentAttempt(message) {
+  if (gameState.mode !== "challenge" || gameState.isResettingAttempt || gameState.isTimeUp) return;
+  gameState.isResettingAttempt = true;
+  gameState.cooking = emptyCookingState();
+  gameState.currentOrderErrors.clear();
+  endStirGesture();
+  renderCooking();
+  els.resultBox.className = "result error attempt-fail";
+  els.resultBox.innerHTML = `<strong>✕</strong><span>${message}<br>請重新製作這張訂單。</span>`;
+  els.phaseHint.textContent = "順序錯誤，鍋子已清空。計時繼續，重新從加水開始。";
+  setTimeout(() => {
+    if (gameState.isTimeUp || gameState.mode !== "challenge") return;
+    gameState.isResettingAttempt = false;
+    els.resultBox.textContent = "";
+    els.resultBox.className = "result";
+    renderCooking();
+  }, 1100);
 }
 
 function getVegetable(id) {
@@ -417,8 +440,32 @@ function renderIngredients() {
 }
 
 function addIngredient(item) {
-  if (!gameState.isChallengeRunning || gameState.isPaused || gameState.isTimeUp || gameState.cooking.delivered) return;
+  if (
+    !gameState.isChallengeRunning ||
+    gameState.isPaused ||
+    gameState.isTimeUp ||
+    gameState.isResettingAttempt ||
+    gameState.cooking.delivered
+  ) return;
   const cooking = gameState.cooking;
+  if (gameState.mode === "challenge") {
+    if (item.type === "rice" && !cooking.water) {
+      failCurrentAttempt("還沒加水就加米。");
+      return;
+    }
+    if (item.type === "vegetable" && (!cooking.water || !cooking.rice)) {
+      failCurrentAttempt("還沒完成加水、加米就放野菜。");
+      return;
+    }
+    if (item.type === "vegetable" && cooking.stirBeforeVegetables < 3) {
+      failCurrentAttempt("忘記先順時鐘攪拌三圈就放野菜。");
+      return;
+    }
+    if (item.type !== "vegetable" && cooking.hasAddedVegetables) {
+      failCurrentAttempt("放入野菜後不能再補加水或米。");
+      return;
+    }
+  }
   if (gameState.mode === "custom") {
     if (item.type === "rice" && !cooking.water) {
       els.phaseHint.textContent = "自由料理也要先加水，才能加米。";
@@ -477,8 +524,24 @@ function playAddSound() {
 }
 
 function stirClockwise() {
-  if (!gameState.isChallengeRunning || gameState.isPaused || gameState.isTimeUp || gameState.cooking.delivered) return;
+  if (
+    !gameState.isChallengeRunning ||
+    gameState.isPaused ||
+    gameState.isTimeUp ||
+    gameState.isResettingAttempt ||
+    gameState.cooking.delivered
+  ) return;
   const cooking = gameState.cooking;
+  if (gameState.mode === "challenge") {
+    if (!cooking.water || !cooking.rice) {
+      failCurrentAttempt("還沒加水和米就開始攪拌。");
+      return;
+    }
+    if (cooking.stirBeforeVegetables >= 3 && !cooking.hasAddedVegetables) {
+      failCurrentAttempt("第一次攪拌完成後，還沒放野菜就繼續攪拌。");
+      return;
+    }
+  }
   if (gameState.mode === "custom") {
     if (!cooking.water || !cooking.rice) {
       els.phaseHint.textContent = "請先加水和米，才能進行第一次攪拌。";
@@ -515,7 +578,13 @@ function normalizeAngleDelta(delta) {
 }
 
 function startStirGesture(event) {
-  if (!gameState.isChallengeRunning || gameState.isPaused || gameState.isTimeUp || gameState.cooking.delivered) return;
+  if (
+    !gameState.isChallengeRunning ||
+    gameState.isPaused ||
+    gameState.isTimeUp ||
+    gameState.isResettingAttempt ||
+    gameState.cooking.delivered
+  ) return;
   gameState.stirGesture.active = true;
   gameState.stirGesture.lastAngle = getPointerAngle(event);
   gameState.stirGesture.clockwiseTravel = 0;
@@ -554,7 +623,13 @@ function endStirGesture(event) {
 }
 
 function serveRice() {
-  if (!gameState.isChallengeRunning || gameState.isPaused || gameState.isTimeUp || gameState.cooking.delivered) return;
+  if (
+    !gameState.isChallengeRunning ||
+    gameState.isPaused ||
+    gameState.isTimeUp ||
+    gameState.isResettingAttempt ||
+    gameState.cooking.delivered
+  ) return;
   if (gameState.mode === "custom") {
     const vegetableCount = getTotalVegetableCount();
     if (vegetableCount === 0) {
@@ -566,13 +641,23 @@ function serveRice() {
       return;
     }
   }
+  if (gameState.mode === "challenge" && gameState.cooking.stirAfterVegetables < 3) {
+    failCurrentAttempt("還沒完成第二次順時鐘攪拌三圈就盛裝。");
+    return;
+  }
   gameState.cooking.served = true;
   gameState.cooking.actions.push("serve");
   renderCooking();
 }
 
 function deliverRice() {
-  if (!gameState.isChallengeRunning || gameState.isPaused || gameState.isTimeUp || gameState.cooking.delivered) return;
+  if (
+    !gameState.isChallengeRunning ||
+    gameState.isPaused ||
+    gameState.isTimeUp ||
+    gameState.isResettingAttempt ||
+    gameState.cooking.delivered
+  ) return;
   if (gameState.mode === "custom") {
     if (!gameState.cooking.served) {
       els.phaseHint.textContent = "請先盛裝，再完成料理。";
@@ -582,6 +667,10 @@ function deliverRice() {
     gameState.cooking.actions.push("deliver");
     finishCustomRice();
     renderCooking();
+    return;
+  }
+  if (!gameState.cooking.served) {
+    failCurrentAttempt("還沒盛裝就交給客人。");
     return;
   }
   gameState.cooking.delivered = true;
@@ -606,12 +695,12 @@ function renderCooking() {
   els.pot.classList.toggle("served", cooking.served);
   els.potLabel.textContent = cooking.served ? "已盛裝" : vegetableCount ? "菜香上來了" : "鍋中料理";
   [els.riceQuick, els.waterQuick, els.serveBtn, els.deliverBtn].forEach((button) => {
-    button.disabled = gameState.isPaused || cooking.delivered;
+    button.disabled = gameState.isPaused || gameState.isResettingAttempt || cooking.delivered;
     button.draggable = !button.disabled;
   });
   document.querySelectorAll("[data-type='vegetable']").forEach((button) => {
     const locked = gameState.mode === "custom" && cooking.stirAfterVegetables > 0;
-    button.disabled = gameState.isPaused || locked || cooking.delivered;
+    button.disabled = gameState.isPaused || gameState.isResettingAttempt || locked || cooking.delivered;
     button.draggable = !button.disabled;
   });
 
