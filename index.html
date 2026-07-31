@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>搖搖飯料理屋｜試玩版</title>
+    <meta name="description" content="搖搖飯料理屋兩分鐘限時挑戰試玩版" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="cover" id="coverPanel">
+        <div class="cover-copy">
+          <p class="eyebrow">搖搖飯料理屋</p>
+          <h1>今天想先認識，還是直接開煮？</h1>
+          <p>
+            你可以先認識搖搖飯會用到的野菜，也可以進入目前的料理遊戲版本，
+            閱讀故事後站上吧檯完成客人的訂單。
+          </p>
+          <div class="cover-links">
+            <button class="source-button" id="aboutBtn" type="button">關於</button>
+          </div>
+        </div>
+        <div class="mode-grid">
+          <button class="mode-card veg-mode" id="learnVegBtn" type="button">
+            <span>我要認識野菜</span>
+            <small>詳細介紹野菜，內容待補</small>
+          </button>
+          <button class="mode-card play-mode primary" id="enterBtn" type="button">
+            <span>我要玩遊戲</span>
+            <small>進入現在的兩分鐘吧檯挑戰</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="about-panel" id="aboutPanel" hidden>
+        <div class="library-head">
+          <div>
+            <p class="eyebrow">關於</p>
+            <h2>文化指導／受訪者</h2>
+            <p>
+              感謝土坂部落頭目、長者、餐廳、青年傳唱隊等接受訪談並分享文化知識。
+              （可依實際受訪者填寫姓名。）
+            </p>
+          </div>
+          <button id="aboutBackBtn" type="button">返回主頁面</button>
+        </div>
+        <div class="about-content">
+          <article>
+            <h3>資料來源</h3>
+            <p>
+              本遊戲內容整理自土坂部落田野踏查、訪談紀錄及相關文獻，部分內容經簡化呈現，
+              僅供教育推廣使用。本遊戲以教育推廣為目的，內容主要依據土坂部落田野訪談與資料整理製作。
+              若有不足之處，歡迎提供建議與指正，共同保存與傳承部落飲食文化。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="veg-library" id="vegLibraryPanel" hidden>
+        <div class="library-head">
+          <div>
+            <p class="eyebrow">我要認識野菜</p>
+            <h2>野菜介紹</h2>
+            <div class="tribe-title">
+              <span>搖搖飯</span>
+              <strong>pinu-ljacengang</strong>
+              <button class="audio-button" type="button" disabled aria-label="搖搖飯語音待補">▶</button>
+            </div>
+            <p>這裡會放你之後提供的詳細介紹。現在先保留五種野菜的入口卡片。</p>
+          </div>
+          <button id="vegBackBtn" type="button">回到主頁</button>
+        </div>
+        <div class="veg-library-grid">
+          <article>
+            <img src="assets/purple-back-grass-cutout.png" alt="紫背草" />
+            <b>1</b>
+            <div class="veg-name-row">
+              <h3>紫背草</h3>
+              <button class="audio-button" type="button" data-audio-src="assets/veg-audio/purple-kamutu.m4a" aria-label="播放紫背草 kamutu">▶</button>
+            </div>
+            <p class="tribe-line">kamutu</p>
+            <p>葉子的正面是綠色，背面則是鮮豔的紫色，因此得名「紫背草」。口感柔嫩，帶有淡淡青草香，常用來煮湯、炒菜或加入搖搖飯，不僅能增添色彩，也富含多種營養。</p>
+          </article>
+          <article>
+            <img src="assets/cicong-cutout.png" alt="刺蔥" />
+            <b>2</b>
+            <div class="veg-name-row">
+              <h3>刺蔥</h3>
+              <button class="audio-button" type="button" data-audio-src="assets/veg-audio/onion-tjanaq.m4a" aria-label="播放刺蔥 tjanaq">▶</button>
+            </div>
+            <p class="tribe-line">tjanaq</p>
+            <p>刺蔥是一種具有濃郁香氣的原生植物，嫩葉散發獨特的柑橘與辛香味，被稱為「山林的香料」。許多原住民族都會使用它來調味，無論配肉、煎蛋或煮湯都十分美味。</p>
+          </article>
+          <article>
+            <img src="assets/lettuce-cutout.png" alt="山萵苣" />
+            <b>3</b>
+            <div class="veg-name-row">
+              <h3>山萵苣</h3>
+              <button class="audio-button" type="button" data-audio-src="assets/veg-audio/lettuce-samaq.m4a" aria-label="播放山萵苣 samaq">▶</button>
+            </div>
+            <p class="tribe-line">samaq</p>
+            <p>山萵苣是一種常見的山野植物，嫩葉鮮嫩爽口，帶有淡淡苦味，川燙後可涼拌、炒食或煮湯。許多部落會依照季節採集，是傳統飲食文化中重要的野菜之一。</p>
+          </article>
+          <article>
+            <img src="assets/showa-grass-cutout.png" alt="昭和草" />
+            <b>4</b>
+            <div class="veg-name-row">
+              <h3>昭和草</h3>
+              <button class="audio-button" type="button" data-audio-src="assets/veg-audio/showa-qaudriudri.m4a" aria-label="播放昭和草 qaudriudri">▶</button>
+            </div>
+            <p class="tribe-line">qaudriudri</p>
+            <p>昭和草生長快速，在田邊、山坡都很常見。嫩葉可以食用，口感柔軟，帶有微微苦味，川燙後再炒或煮湯最為常見。以前也是許多人餐桌上的野菜。</p>
+          </article>
+          <article>
+            <img src="assets/pumpkin-leaf-cutout.png" alt="南瓜嫩葉" />
+            <b>5</b>
+            <div class="veg-name-row">
+              <h3>南瓜嫩葉</h3>
+              <button class="audio-button" type="button" disabled aria-label="南瓜嫩葉語音待補">▶</button>
+            </div>
+            <p class="tribe-line">ludus</p>
+            <p>除了南瓜果實之外，南瓜的新芽和嫩葉也能食用。去除葉梗外層細毛後，口感柔嫩清甜，常加入湯品或野菜料理，是許多部落家庭常見的食材。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="reader" id="readerPanel" hidden>
+        <div class="book">
+          <div class="page-mark" id="pageMark">1 / 4</div>
+          <p class="eyebrow" id="pageEyebrow">歷史</p>
+          <h2 id="pageTitle">山野裡的搖搖飯</h2>
+          <p id="pageBody"></p>
+          <div class="book-visual" id="bookVisual" aria-hidden="true"></div>
+        </div>
+        <div class="reader-actions">
+          <button id="prevPageBtn" type="button">上一頁</button>
+          <button class="primary" id="nextPageBtn" type="button">下一頁</button>
+        </div>
+      </section>
+
+      <section class="hud" id="hudPanel" hidden aria-label="挑戰狀態">
+        <div>
+          <p class="eyebrow">兩分鐘限時挑戰</p>
+          <h1>吧檯料理中</h1>
+        </div>
+        <div class="meter-row">
+          <div class="meter timer" id="timerBox">
+            <span>剩餘時間</span>
+            <strong id="timer">02:00</strong>
+          </div>
+          <div class="meter">
+            <span>總分</span>
+            <strong id="score">0</strong>
+          </div>
+          <div class="meter">
+            <span>完成訂單</span>
+            <strong id="completed">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="bar-game" id="gamePanel" hidden aria-label="第一人稱吧檯">
+        <section class="counter-view">
+          <div class="customer-line">
+            <div class="customer-figure" aria-hidden="true">
+              <span></span>
+            </div>
+            <div class="order-bubble">
+              <p class="eyebrow" id="orderEyebrow">客人訂單</p>
+              <h2 id="customerName">客人</h2>
+              <div class="speech">
+                <p id="orderSpeech">「我要一份搖搖飯，請幫我加上這些菜。」</p>
+                <ul id="orderList"></ul>
+              </div>
+            </div>
+            <div class="pause-area">
+              <button class="pause-button" id="pauseBtn" type="button">暫停</button>
+              <div class="pause-menu" id="pauseMenu" hidden>
+                <button class="primary" id="restartPausedBtn" type="button">重新計時</button>
+                <button id="homePausedBtn" type="button">回主畫面</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-line" aria-hidden="true"></div>
+
+          <div class="tabletop">
+            <div class="leaf-row" id="ingredientsTray" aria-label="食材區"></div>
+
+            <button class="material-token rice-token" id="riceQuick" type="button" aria-label="米">
+              米
+            </button>
+            <button class="material-token water-token" id="waterQuick" type="button" aria-label="水">
+              水
+            </button>
+
+            <div class="pot" id="pot" aria-label="料理鍋">
+              <div class="pot-liquid"></div>
+              <div class="rice one"></div>
+              <div class="rice two"></div>
+              <div class="veg-dot a"></div>
+              <div class="veg-dot b"></div>
+              <div class="veg-dot c"></div>
+              <div class="stir-arrow" aria-hidden="true">↻</div>
+              <strong id="potLabel">鍋</strong>
+            </div>
+
+            <div class="stir-control" id="stirBtn" role="status">
+              照箭頭在鍋子上轉 <span id="stirCountLabel">0 / 6</span>
+            </div>
+            <button class="serve-token" id="serveBtn" type="button">盛裝</button>
+            <button class="deliver-token" id="deliverBtn" type="button">完成</button>
+          </div>
+
+          <div class="counter-status">
+            <div class="notice" id="phaseHint">把水拖曳到鍋子裡。</div>
+            <div class="result" id="resultBox" aria-live="polite"></div>
+            <aside class="cook-log">
+              <dl>
+                <div><dt>水</dt><dd id="waterState">未加入</dd></div>
+                <div><dt>米</dt><dd id="riceState">未加入</dd></div>
+                <div><dt>盛裝</dt><dd id="serveState">尚未</dd></div>
+              </dl>
+              <div id="chosenList" class="chosen-list"></div>
+            </aside>
+          </div>
+        </section>
+      </section>
+
+      <section class="summary" id="summaryPanel" hidden>
+        <p class="eyebrow">挑戰結束</p>
+        <h2 id="summaryTitle">時間到！</h2>
+        <div class="summary-grid">
+          <div><span>完成訂單</span><b id="finalCompleted">0</b></div>
+          <div><span>總分</span><b id="finalScore">0</b></div>
+          <div><span>完美訂單</span><b id="finalPerfect">0</b></div>
+          <div><span>錯誤訂單</span><b id="finalIncorrect">0</b></div>
+        </div>
+        <p id="unlockText"></p>
+        <div class="summary-actions">
+          <button class="primary" id="retryBtn" type="button">重新挑戰</button>
+          <button id="customBtn" type="button" hidden>製作自己的搖搖飯</button>
+        </div>
+      </section>
+
+      <section class="custom" id="customPanel" hidden>
+        <div>
+          <p class="eyebrow">自由製作</p>
+          <h2>製作自己的搖搖飯</h2>
+          <p>這裡不倒數、不計分。選擇自己喜歡的菜量，完成一碗自己的搖搖飯。</p>
+        </div>
+        <div class="custom-grid" id="customGrid"></div>
+        <div class="summary-actions">
+          <button class="primary" id="finishCustomBtn" type="button">完成搖搖飯</button>
+          <button id="backBtn" type="button">回到首頁</button>
+        </div>
+        <p class="result" id="customResult"></p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
